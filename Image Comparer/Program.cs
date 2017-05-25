@@ -156,7 +156,7 @@ namespace Image_Comparer
                 string fileName = Path.GetFileName(comparisonList[i].Item1);
                 Console.WriteLine(new String('-', Console.WindowWidth - 1));
                 Console.WriteLine("Image: " + fileName + "\n" +
-                    "Match %: " + matchPercent);
+                    "Match %: " + matchPercent * 100f);
                 if (options.MatchTreshold != 0f && matchPercent > options.MatchTreshold)
                 {
                     Console.WriteLine("Match found! Image is being moved to output folder.");
