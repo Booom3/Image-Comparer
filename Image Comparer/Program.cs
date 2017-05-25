@@ -109,7 +109,7 @@ namespace Image_Comparer
                     Console.WriteLine("File found: " +
                         Path.GetFileName(comparisonFilePaths[i]));
                 }
-                catch (OutOfMemoryException ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine("Ignoring: " +
                         Path.GetFileName(comparisonFilePaths[i]));
