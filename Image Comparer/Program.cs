@@ -157,7 +157,7 @@ namespace Image_Comparer
                 Console.WriteLine(new String('-', Console.WindowWidth - 1));
                 Console.WriteLine("Image: " + fileName + "\n" +
                     "Match %: " + matchPercent * 100f);
-                if (options.MatchTreshold != 0f && matchPercent > options.MatchTreshold)
+                if (options.OutputFolder != null && options.MatchTreshold != 0f && matchPercent > options.MatchTreshold)
                 {
                     Console.WriteLine("Match found! Image is being moved to output folder.");
                     string outputFilename;
