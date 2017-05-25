@@ -98,27 +98,26 @@ namespace Image_Comparer
             if (options.ComparisonFolder == null) { MissingArgument("Comparison-Folder", p); };
             Bitmap referenceBitmap = (Bitmap)Image.FromFile(options.ReferenceImage);
             string[] comparisonFilePaths = Directory.GetFiles(options.ComparisonFolder);
-            var comparisonList = new List<Tuple<string, Bitmap>>();
             for (int i = 0; i < comparisonFilePaths.Length; i++)
             {
-                try {
-                    comparisonList.Add(Tuple.Create(comparisonFilePaths[i],
-                        // https://stackoverflow.com/a/1105330
-                        (Bitmap)Image.FromStream(new MemoryStream(File.ReadAllBytes(
-                            comparisonFilePaths[i])))));
+                Console.WriteLine(new String('-', Console.WindowWidth - 1));
+                Bitmap image;
+                string path = comparisonFilePaths[i];
+                try
+                {
+                    // https://stackoverflow.com/a/1105330
+                    image = (Bitmap)Image.FromStream(new MemoryStream(File.ReadAllBytes(path)));
                     Console.WriteLine("File found: " +
-                        Path.GetFileName(comparisonFilePaths[i]));
+                        Path.GetFileName(path));
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Ignoring: " +
-                        Path.GetFileName(comparisonFilePaths[i]));
+                        Path.GetFileName(path));
+                    continue;
                     // ( ͡° ͜ʖ ͡°)
                 }
-            }
 
-            for (int i = 0; i < comparisonList.Count; i++)
-            {
                 int matches = 0, total = 0;
 
                 Rect bounds;
@@ -129,8 +128,8 @@ namespace Image_Comparer
                 else
                 {
                     bounds = new Rect(0, 0,
-                    comparisonList[i].Item2.Width,
-                    comparisonList[i].Item2.Height);
+                    image.Width,
+                    image.Height);
                 }
                 for (
                     int y = bounds.y;
@@ -145,19 +144,17 @@ namespace Image_Comparer
                     )
                     {
                         if (Color.Equals(referenceBitmap.GetPixel(x, y),
-                            comparisonList[i].Item2.GetPixel(x, y)))
+                            image.GetPixel(x, y)))
                         {
                             matches++;
                         }
                         total++;
                     }
                 }
-                float matchPercent = ((float)matches / (float)total);
-                string fileName = Path.GetFileName(comparisonList[i].Item1);
-                Console.WriteLine(new String('-', Console.WindowWidth - 1));
-                Console.WriteLine("Image: " + fileName + "\n" +
-                    "Match %: " + matchPercent * 100f);
-                if (options.OutputFolder != null && options.MatchTreshold != 0f && matchPercent > options.MatchTreshold)
+                float matchRatio = ((float)matches / (float)total);
+                string fileName = Path.GetFileName(path);
+                Console.WriteLine("Match %: " + matchRatio * 100f);
+                if (options.OutputFolder != null && options.MatchTreshold != 0f && matchRatio > options.MatchTreshold)
                 {
                     Console.WriteLine("Match found! Image is being moved to output folder.");
                     string outputFilename;
@@ -169,19 +166,20 @@ namespace Image_Comparer
                     {
                         outputFilename = options.OutputFilename;
                         outputFilename = outputFilename.Replace("<o>",
-                            Path.GetFileNameWithoutExtension(comparisonList[i].Item1));
+                            Path.GetFileNameWithoutExtension(path));
                         outputFilename = outputFilename.Replace("<e>",
-                            Path.GetExtension(comparisonList[i].Item1));
+                            Path.GetExtension(path));
                     }
-                    try {
+                    try
+                    {
                         if (options.Copy)
                         {
-                            File.Copy(comparisonList[i].Item1,
+                            File.Copy(path,
                                 Path.Combine(options.OutputFolder, outputFilename));
                         }
                         else
                         {
-                            File.Move(comparisonList[i].Item1,
+                            File.Move(path,
                                 Path.Combine(options.OutputFolder, outputFilename));
                         }
                     }
