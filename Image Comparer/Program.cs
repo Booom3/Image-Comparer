@@ -131,17 +131,9 @@ namespace Image_Comparer
                     image.Width,
                     image.Height);
                 }
-                for (
-                    int y = bounds.y;
-                    y < bounds.h;
-                    y++
-                )
+                for (int y = bounds.y; y < bounds.h; y++)
                 {
-                    for (
-                        int x = bounds.x;
-                        x < bounds.w;
-                        x++
-                    )
+                    for (int x = bounds.x; x < bounds.w; x++)
                     {
                         if (Color.Equals(referenceBitmap.GetPixel(x, y),
                             image.GetPixel(x, y)))
@@ -154,7 +146,7 @@ namespace Image_Comparer
                 float matchRatio = ((float)matches / (float)total);
                 string fileName = Path.GetFileName(path);
                 Console.WriteLine("Match %: " + matchRatio * 100f);
-                if (options.OutputFolder != null && options.MatchTreshold != 0f && matchRatio > options.MatchTreshold)
+                if (options.OutputFolder != null && options.MatchTreshold != 0f && matchRatio >= options.MatchTreshold)
                 {
                     Console.WriteLine("Match found! Image is being moved to output folder.");
                     string outputFilename;
